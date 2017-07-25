@@ -1,0 +1,9 @@
+.config*
+config_custom.yaml
+.*.swp
+doc
+*.log
+*.tar.gz
+*~
+app/obj
+app/deviceLoad
