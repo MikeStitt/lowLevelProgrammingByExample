@@ -1,0 +1,36 @@
+
+Kconfig := ../$(APP_DIR)/menuConfig/Kconfig
+
+.PHONY: menuconfig
+menuconfig: ../$(SCAFFOLDING_DIR)/MakeCommonVars
+	$(Q)CONFIG_=CONFIG_ kconfig-mconf $(Kconfig)
+
+.PHONY: config
+config: ../$(SCAFFOLDING_DIR)/MakeCommonVars
+	$(Q)CONFIG_=CONFIG_ kconfig-conf --oldaskconfig $(Kconfig)
+
+.PHONY: nconfig
+nconfig: ../$(SCAFFOLDING_DIR)/MakeCommonVars
+	$(Q)CONFIG_=CONFIG_ kconfig-nconf $(Kconfig)
+
+.PHONY: oldconfig silentoldconfig allnoconfig allyesconfig alldefconfig randconfig
+.PHONY: olddefconfig oldnoconfig
+oldconfig silentoldconfig allnoconfig allyesconfig alldefconfig randconfig olddefconfig oldnoconfig:
+	$(Q)CONFIG_=CONFIG_ kconfig-conf --$@ $(Kconfig)
+
+.PHONY: listnewconfig
+listnewconfig:
+	$(Q)CONFIG_=CONFIG_ kconfig-conf --$@ $(Kconfig)
+
+.PHONY: savedefconfig
+savedefconfig:
+	$(Q)CONFIG_=CONFIG_ kconfig-conf --$@=menuConfig/defconfig $(Kconfig)
+
+
+../$(SCAFFOLDING_DIR)/scripts/mkconfig/mkconfig: ../$(SCAFFOLDING_DIR)/scripts/mkconfig/mkconfig.c
+	$(Q)gcc ../$(SCAFFOLDING_DIR)/scripts/mkconfig/mkconfig.c ../$(SCAFFOLDING_DIR)/scripts/mkconfig/cfgparser.c ../$(SCAFFOLDING_DIR)/scripts/mkconfig/cfgdefine.c -o ../$(SCAFFOLDING_DIR)/scripts/mkconfig/mkconfig
+
+
+../$(APP_DIR)/include/generated/autoconf.h: .config ../$(SCAFFOLDING_DIR)/scripts/mkconfig/mkconfig
+	$(Q)echo '+--Building include/generated/autoconf.h'
+	$(Q)../$(SCAFFOLDING_DIR)/scripts/mkconfig/mkconfig ./ > ../$(APP_DIR)/include/generated/autoconf.h

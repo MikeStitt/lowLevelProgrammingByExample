@@ -1,0 +1,268 @@
+DEVICE_LOAD_DIR = deviceLoad/
+
+SOURCE-y        :=
+INCLUDE_DIRS-y  :=
+APP_FLAGS-y     :=
+
+#
+# The flags passed to the linker for the app.
+#
+APP_LDFLAGS-y                             =
+APP_LDFLAGS-$(CONFIG_NEWLIB_NANO)         += -u _scanf_float
+APP_LDFLAGS-$(CONFIG_NEWLIB_NANO)         += -u _printf_float
+APP_LDFLAGS-y                             += -nostartfiles
+APP_LDFLAGS-y                             += --gc-sections
+
+export LD_DYNAMIC_WEAK
+export MAKECOMMON_RAN = y
+
+
+ifeq ($(OBJ_DIR),)
+OBJ_DIR=$(TOP_BUILD_DIR)
+endif
+
+#
+# make menuconfig
+#
+# will make .config
+#
+# define a common location for .config across all subprojects
+
+
+DOT_CONFIG_FILE := ../$(APP_DIR)/.config
+export DOT_CONFIG_FILE
+-include $(DOT_CONFIG_FILE)
+
+#
+# Define a function to check that variables are set and don't have empty values.
+#
+# Check that given variables are set and all have non-empty values,
+# die with an error otherwise.
+#
+# Params:
+#   1. Variable name(s) to test.
+#   2. (optional) Error message to print.
+#
+# See http://stackoverflow.com/questions/10858261/abort-makefile-if-variable-not-set
+#
+check_defined = \
+    $(foreach 1,$1,$(__check_defined))
+__check_defined = \
+    $(if $(value $1),, \
+      $(error Undefined $1$(if $(value 2), ($(strip $2)))))
+
+#
+# Define a function to strip quotes from variables defined in .config
+#
+unquote = $(subst $\",,$1)
+
+#
+# Dequote the .config strings before use.  Defines in .config start
+# with CONFIG_
+#
+CROSS_COMPILE ?= $(call unquote,$(CONFIG_CROSS_COMPILE))
+
+PROG = $(call unquote,$(CONFIG_MCU))_EVB
+PROG_LIB = $(PROG).a
+TOOLCHAIN_MCPU_EQ        = $(call unquote,$(CONFIG_TOOLCHAIN_MCPU_EQ))
+TOOLCHAIN_MARCH_EQ       = $(call unquote,$(CONFIG_TOOLCHAIN_MARCH_EQ))
+TOOLCHAIN_MFLOAT_ABI_EQ  = $(call unquote,$(CONFIG_TOOLCHAIN_MFLOAT_ABI_EQ))
+TOOLCHAIN_MFPU_EQ        = $(call unquote,$(CONFIG_TOOLCHAIN_MFPU_EQ))
+TOOLCHAIN_OPTIMISATION   = $(call unquote,$(CONFIG_TOOLCHAIN_OPTIMISATION))
+
+
+ifeq ($(CONFIG_CONFIGURED),y)
+    ifeq ($(CONFIG_QUIET_BUILD),y)
+        Q ?= @
+    else
+        Q ?= #@
+    endif
+else
+     #
+     # When we don't have a command line Q setting
+     #   e.g. $ make help Q=@
+     # and we don't have a .config file
+     #   e.g. $ make nconfig
+     #        $ make help
+     # we default to a quiet make.
+     #
+     Q ?= @
+endif
+
+# Convention for where the build detritus ends up
+#
+# We build a tree of object files (.o) and dependancy files
+# in $(TOP_BUILD_DIR).
+#
+# The tree matches the structure of the source tree.
+#
+TOP_BUILD_DIR   = obj/
+BUILD_DIR	= $(OBJ_DIR)$(APP_DIR)/
+
+MFG_TOP_BUILD_DIR = mfgObj/
+MFGTST_BUILD_DIR = $(MFG_TOP_BUILD_DIR)$(APP_DIR)/
+
+include ../$(SCAFFOLDING_DIR)/MakeToolDefs
+
+# Misc. executables.
+RM=/bin/rm
+DOXYGEN=/usr/bin/doxygen
+RAKE=rake
+
+#
+# GENERAL_FLAGS - Flags that are passed to assembler, c compiler, and C++ compiler across target programs
+# COMMON_CPPFLAGS - Flags that are passed to the C PreProcessor (CPP) across target programs
+# COMMON_AFLAGS - Flags that are passed to the assembler across target programs
+# COMMON_CFLAGS - Flags that are passed to the c compiler across target programs
+# COMMON_CXXFLAGS - Flags that are passed to the c++ compiler across target programs
+
+
+#
+GENERAL_FLAGS-y                              =
+GENERAL_FLAGS-$(CONFIG_TOOLCHAIN_USE_MTHUMB) += -mthumb
+GENERAL_FLAGS-y                              += $(TOOLCHAIN_MCPU_EQ)
+GENERAL_FLAGS-y                              += $(TOOLCHAIN_MARCH_EQ)
+
+
+GENERAL_FLAGS = $(GENERAL_FLAGS-y)
+
+#
+COMMON_CPPFLAGS-y                                  =
+COMMON_CPPFLAGS-y                                  +=
+#
+# The following are needed by stm32f4xx.h in the STM Std Perihperal Driver CMSIS code
+#
+COMMON_CPPFLAGS-$(CONFIG_STM32F40_41XXX)           += -D"STM32F40_41xxx"
+COMMON_CPPFLAGS-$(CONFIG_STM32F401XX)              += -D"STM32F401xx"
+COMMON_CPPFLAGS-$(CONFIG_STM32F427_437XX)          += -D"STM32F427_437xx"
+COMMON_CPPFLAGS-$(CONFIG_STM32F429_439XX)          += -D"STM32F429_439xx"
+#
+# todo figure out how to turn this off
+COMMON_CPPFLAGS-y                                  += -D"USE_STDPERIPH_DRIVER"
+
+
+COMMON_CPPFLAGS-$(CONFIG_NDEBUG_ENA)               += -D"NDEBUG"
+
+COMMON_CPPFLAGS-$(CONFIG_FREERTOS_PORT_ARM_CM3)      += -D GCC_ARM_CM3
+COMMON_CPPFLAGS-$(CONFIG_FREERTOS_PORT_ARM_CM4F)     += -D GCC_ARM_CM4F
+COMMON_CPPFLAGS-y                                    += -D ALIGN_STRUCT_END=__attribute\(\(aligned\(4\)\)\)
+COMMON_CPPFLAGS-y                                    += -D DEPRECATED
+COMMON_CPPFLAGS-y                                    += -D WDT_ENABLE=$(WDT_ENABLE)
+COMMON_CPPFLAGS-y                                    += -D INCLUDE_AUTOCONF
+
+#
+# Adding these for the FFT Library (JVP - 10/16/2015)
+#
+# todo: Better system for when these are defined.
+#
+COMMON_CPPFLAGS-y                                  += -D ARM_MATH_CM4
+COMMON_CPPFLAGS-y                                  += -D __FPU_PRESENT=1
+
+
+COMMON_CPPFLAGS-y                                  += $(SET_IP_ADR) $(PROTECT_PERMCFG) $(ERASE_PERMCFG)
+COMMON_CPPFLAGS-y                                  += $(INCLUDE_DIRS)
+
+COMMON_CPPFLAGS = $(COMMON_CPPFLAGS-y)
+
+
+#
+COMMON_AFLAGS-y                              =
+COMMON_AFLAGS-y                              += -std=c99
+
+COMMON_AFLAGS = $(COMMON_AFLAGS-y)
+
+#
+COMMON_CFLAGS-y                              =
+COMMON_CFLAGS-y                              += -std=c99
+COMMON_CFLAGS-y                              += $(TOOLCHAIN_MCPU_EQ)
+COMMON_CFLAGS-y                              += $(TOOLCHAIN_MARCH_EQ)
+COMMON_CFLAGS-y                              += $(TOOLCHAIN_MFLOAT_ABI_EQ)
+COMMON_CFLAGS-y                              += $(TOOLCHAIN_MFPU_EQ)
+COMMON_CFLAGS-y                              += $(TOOLCHAIN_OPTIMISATION)
+COMMON_CFLAGS-y                              += -ffunction-sections
+COMMON_CFLAGS-y                              += -fdata-sections
+COMMON_CFLAGS-$(CONFIG_TOOLCHAIN_PEDANTIC)   += -pedantic
+COMMON_CFLAGS-$(CONFIG_TOOLCHAIN_WALL)       += -Wall
+COMMON_CFLAGS-$(CONFIG_TOOLCHAIN_WERROR)     += -Werror
+COMMON_CFLAGS-$(CONFIG_TOOLCHAIN_VERBOSE)    += -v
+COMMON_CFLAGS-$(CONFIG_TOOLCHAIN_PRTHEADERS) += -H
+COMMON_CFLAGS-$(CONFIG_TOOLCHAIN_DEBUG)      += -g
+
+
+COMMON_CFLAGS = $(COMMON_CFLAGS-y)
+
+#
+COMMON_CXXFLAGS-y                            =
+COMMON_CXXFLAGS-y                            +=
+
+COMMON_CXXFLAGS-y += $(COMMON_CXXFLAGS-y)
+
+#
+CPPFLAGS-y                                         =
+CPPFLAGS-y                                         += $(COMMON_CPPFLAGS)
+
+CPPFLAGS = $(CPPFLAGS-y)
+
+#
+# The flags passed to the assembler.PROG
+#
+AFLAGS-y                              =
+AFLAGS-y                              += $(GENERAL_FLAGS)
+AFLAGS-y                              += $(COMMON_AFLAGS)
+AFLAGS-y                              += -MD
+
+AFLAGS = $(AFLAGS-y)
+
+#
+# The flags passed to the compiler.
+#
+
+BOOTS_CFLAGS-y                              =
+BOOTS_CFLAGS-y                              += $(GENERAL_FLAGS)
+BOOTS_CFLAGS-y                              += $(COMMON_CFLAGS)
+
+BOOTS_CFLAGS = $(BOOTS_CFLAGS-y)
+
+CFLAGS-y                              =
+CFLAGS-y                              += $(GENERAL_FLAGS)
+CFLAGS-y                              += $(COMMON_CFLAGS)
+
+CFLAGS = $(CFLAGS-y)
+
+#
+# The flags passed to the linker.
+#
+LDFLAGS-y                             =
+LDFLAGS-$(CONFIG_STM_SRAM_128K)       += -T ../$(HAL_DIR)/ldCfg/stm32f4_sram_128k.ld
+LDFLAGS-$(CONFIG_STM_SRAM_192K)       += -T ../$(HAL_DIR)/ldCfg/stm32f4_sram_192k.ld
+LDFLAGS-$(CONFIG_STM_CCM_64K)         += -T ../$(HAL_DIR)/ldCfg/stm32f4_ccm_64k.ld
+LDFLAGS-$(CONFIG_STM_FLASH_512K)      += -T ../$(HAL_DIR)/ldCfg/stm32f4_flash_512k.ld
+LDFLAGS-$(CONFIG_STM_FLASH_1M)        += -T ../$(HAL_DIR)/ldCfg/stm32f4_flash_1m.ld
+LDFLAGS-$(CONFIG_STM_FLASH_2M)        += -T ../$(HAL_DIR)/ldCfg/stm32f4_flash_2m.ld
+LDFLAGS-$(CONFIG_NRF_SRAM_64K)        += -T ../$(HAL_DIR)/ldCfg/nrf52_sram_64k.ld
+LDFLAGS-$(CONFIG_NRF_FLASH_512K)      += -T ../$(HAL_DIR)/ldCfg/nrf52_flash_512k.ld
+LDFLAGS-y                             += -T ../$(HAL_DIR)/ldCfg/configArmCortex.ld
+LDFLAGS-$(CONFIG_NEWLIB_NANO)         += -u _scanf_float
+LDFLAGS-$(CONFIG_NEWLIB_NANO)         += -u _printf_float
+LDFLAGS-y                             += -nostartfiles
+LDFLAGS-y                             += -Map=$(TOP_BUILD_DIR)$(PROG).map
+
+# should use --gc-sections but the debugger does not seem to be able to
+# cope with the option.
+LDFLAGS-y                             += --gc-sections
+
+LDFLAGS = $(LDFLAGS-y)
+
+#
+# The flags passed to the objcopy.
+#
+OBJCOPYFLAGS-y                             =
+OBJCOPYFLAGS-y                             += -O binary
+OBJCOPYFLAGS-y                             += -j .text
+OBJCOPYFLAGS-y                             += -j .ARM
+OBJCOPYFLAGS-y                             += -j .data
+OBJCOPYFLAGS-y                             += -j .crc
+
+OBJCOPYFLAGS = $(OBJCOPYFLAGS-y)
+
+

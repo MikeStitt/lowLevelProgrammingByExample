@@ -1,0 +1,33 @@
+# Adding C Source Files
+SOURCE-y                                     += ../$(HAL_STM_STM32F4XX_COMMON_DIR)/source/board/gpioDriverImplement.c
+SOURCE-y                                     += ../$(HAL_STM_STM32F4XX_COMMON_DIR)/source/board/serialPortPrivateDriver.c
+SOURCE-y                                     += ../$(HAL_STM_STM32F4XX_COMMON_DIR)/source/startup/halStartupBeforeMain.c
+#
+SOURCE-y                                     += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c
+SOURCE-y                                     += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/misc.c
+SOURCE-y                                     += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_adc.c
+SOURCE-y                                     += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_crc.c
+SOURCE-y                                     += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c
+SOURCE-y                                     += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_exti.c
+SOURCE-y                                     += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_flash.c
+SOURCE-$(CONFIG_STM32F40G_EVAL)              += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_fsmc.c
+SOURCE-$(CONFIG_STM32F437I_EVAL)             += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_fmc.c
+SOURCE-y                                     += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
+SOURCE-y                                     += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_i2c.c
+SOURCE-y                                     += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_iwdg.c
+SOURCE-y                                     += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_pwr.c
+SOURCE-y                                     += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c
+SOURCE-y                                     += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rtc.c
+SOURCE-y                                     += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_sdio.c
+SOURCE-y                                     += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_spi.c
+SOURCE-y                                     += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_syscfg.c
+SOURCE-y                                     += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c
+SOURCE-y                                     += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_tim.c
+SOURCE-y                                     += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_cryp.c
+SOURCE-y                                     += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rng.c
+SOURCE-$(CONFIG_STM32F40G_EVAL)              += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Utilities/STM32_EVAL/STM3240_41_G_EVAL/stm324xg_eval_lcd.c
+SOURCE-$(CONFIG_STM32F437I_EVAL)             += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Utilities/STM32_EVAL/STM3240_41_G_EVAL/stm324xg_eval_lcd.c
+SOURCE-$(CONFIG_STM32F40G_EVAL)              += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Utilities/STM32_EVAL/STM3240_41_G_EVAL/stm324xg_eval.c
+SOURCE-$(CONFIG_STM32F437I_EVAL)             += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Utilities/STM32_EVAL/STM3240_41_G_EVAL/stm324xg_eval.c
+SOURCE-$(CONFIG_STM32F40G_EVAL)              += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Utilities/STM32_EVAL/STM3240_41_G_EVAL/stm324xg_eval_sdio_sd.c
+SOURCE-$(CONFIG_STM32F437I_EVAL)             += ../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Utilities/STM32_EVAL/STM324x7I_EVAL/stm324x7i_eval_sdio_sd.c

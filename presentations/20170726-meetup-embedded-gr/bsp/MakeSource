@@ -1,0 +1,6 @@
+# Adding C Source Files
+SOURCE-y                                     += ../$(BSP_DIR)/source/startup/main.c
+SOURCE-y                                     += ../$(BSP_DIR)/source/newlib/syscalls.c
+SOURCE-y                                     += ../$(BSP_DIR)/source/board/gpioDriver.c
+SOURCE-y                                     += ../$(BSP_DIR)/source/board/serialPortDriver.c
+

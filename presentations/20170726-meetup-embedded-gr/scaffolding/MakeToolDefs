@@ -1,0 +1,136 @@
+#
+# Makefile
+#
+# CROSS_COMPILE specify the prefix used for all executables used
+# during compilation. Only gcc and related bin-utils executables
+# are prefixed with $(CROSS_COMPILE).
+#
+# CROSS_COMPILE can be set on the command line:
+#   make CROSS_COMPILE=arm-none-eabi-
+# or defeated:
+#   make CROSS_COMPILE=
+#
+# ARCH is the target architecture.
+
+#$(info arm: CROSS_COMPILE is $(CROSS_COMPILE))
+ifndef CROSS_COMPILE
+CROSS_COMPILE	= arm-none-eabi-
+endif
+#$(info arm: CROSS_COMPILE is $(CROSS_COMPILE))
+
+# Make variables (CC, etc...)
+
+AS		= $(CROSS_COMPILE)as
+LD		= $(CROSS_COMPILE)ld
+CC		= $(CROSS_COMPILE)gcc
+CPP		= $(CC) -E
+AR		= $(CROSS_COMPILE)ar
+NM		= $(CROSS_COMPILE)nm
+STRIP		= $(CROSS_COMPILE)strip
+OBJCOPY		= $(CROSS_COMPILE)objcopy
+OBJDUMP		= $(CROSS_COMPILE)objdump
+GDB             = $(CROSS_COMPILE)gdb
+RANLIB          = $(CROSS_COMPILE)ranlib
+
+CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
+
+SEP = '-----------------------------------------------------------------------+-'
+
+
+#
+# -MF  write the generated dependency rule to a file
+# -MG  assume missing headers will be generated and don't stop with an error
+# -MM  generate dependency rule for prerequisite, skipping system headers
+# -MP  add phony target for each header to prevent errors when header is missing
+# -MT  add a target to the generated dependency
+#
+# "$@" is the target (the thing on the left side of the : )
+# "$<" is the prerequisite (the thing on the right side of the : ).
+# The expression "$(<:.c=.o)" replaces the .c extension with .o.
+#
+# The trick here is to generate the rule with two targets by adding -MT twice;
+# this makes both the .o file and the .d file depend on the source file
+# and its headers; that way the dependency file gets automatically regenerated
+# whenever any of the corresponding .c or .h files are changed.
+#
+# The -MG and -MP options keep make from freaking out if a header file is missing.
+#
+# We've removed the -MP option to keep make from infinite looping within the
+# dependency generation.
+#
+
+DEPENDENCY_OPTIONS = -MF$@ -MG -MM -MT$@ -MT$(@:.d=.o) $<
+C_OPTIONS = -c -o $@ $<
+A_OPTIONS = -o $@ -c $<
+
+#
+# CPPFLAGS are flags to the C Preprossor
+# CFLAGS are flags to the C Compiler
+# AFLAGS are flags to the Assembler
+
+
+# ------------------------------------
+#
+# Rules for compiling app and bsp c files
+#
+
+#create dependencies (.d)
+
+$(BUILD_DIR)%.d : %.c ../$(APP_DIR)/include/generated/autoconf.h
+	@echo "+--Generating Dependency $@"
+	$(Q)mkdir -p $(dir $@)
+	$(Q)$(CC) $(CPPFLAGS) $(CFLAGS) $(APP_FLAGS) $(GROUP_FLAGS) $(TARGET_DOT_O_SPECIFIC_FLAGS) $(DEPENDENCY_OPTIONS)
+
+# create object (.o)
+
+$(BUILD_DIR)%.o: %.c
+	@echo "+--$(CC) -o $<"
+	$(Q)mkdir -p $(dir $@)
+	$(Q)$(CC) $(CPPFLAGS) $(CFLAGS) $(APP_FLAGS) $(GROUP_FLAGS) $(TARGET_DOT_O_SPECIFIC_FLAGS) $(C_OPTIONS)
+
+# ------------------------------------
+#
+# Rule for building the object file from each app and bsp assembly source file.
+#
+
+#create dependencies (.d)
+
+$(BUILD_DIR)%.d : %.S ../$(APP_DIR)/include/generated/autoconf.h
+	@echo "+--Generating Dependency $@"
+	$(Q)mkdir -p $(dir $@)
+	$(Q)$(CC) $(CPPFLAGS) $(AFLAGS) $(APP_FLAGS) $(GROUP_FLAGS) $(TARGET_DOT_O_SPECIFIC_FLAGS) $(DEPENDENCY_OPTIONS)
+
+# create object (.o)
+
+$(BUILD_DIR)%.o: %.S
+	@echo "+--$(AS) $<"
+	$(Q)mkdir -p $(dir $@)
+	$(Q)$(CC) $(CPPFLAGS) $(AFLAGS) $(APP_FLAGS) $(GROUP_FLAGS) $(TARGET_DOT_O_SPECIFIC_FLAGS) $(A_OPTIONS)
+
+
+# ------------------------------------
+#
+# The rule for creating an object library.
+#
+$(BUILD_DIR)%.a:
+	@echo "+--$(AR) $@"
+	$(Q)mkdir -p $(dir $@)
+	$(Q)$(AR) -cr $@ $^
+
+# ------------------------------------
+#
+# The rule to turn a .axf file into a .bin
+#
+%.bin: %.axf
+	@echo "+--$(OBJCOPY) -O binary $< $@"
+	$(Q)$(OBJCOPY) $(OBJCOPYFLAGS) $< $@
+
+# ------------------------------------
+#
+# The rule for turning text files into c includes;
+#
+TEXTTOC=sed -f src/httpd-fs/text-to-c-strings.sed
+
+src/httpd-fs/%_html.h: src/httpd-fs/html/%.html
+	@echo "+--convert $< to .h"
+	$(Q)$(TEXTTOC) $< > $@

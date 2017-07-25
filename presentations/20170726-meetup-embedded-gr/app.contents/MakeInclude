@@ -1,0 +1,2 @@
+# Example of how to add an include dir to the list, don't forget the -I..
+INCLUDE_DIRS-y                                 += -I../$(APP_CONTENTS_DIR)/source

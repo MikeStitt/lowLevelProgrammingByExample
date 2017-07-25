@@ -1,0 +1,4 @@
+source "../scaffolding/menuConfig/KconfigBoard"
+source "../scaffolding/menuConfig/KconfigProcessor"
+source "../scaffolding/menuConfig/KconfigBuildOptions"
+source "../scaffolding/menuConfig/KconfigNewLib"
