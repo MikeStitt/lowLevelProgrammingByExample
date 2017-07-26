@@ -176,7 +176,7 @@ void WEAK FPU_IRQHandler(void);
 RESET_STACK_SECTION int resetStack[RAM_APP_RESET_STACK_LEN / sizeof(int)];
 
 
-WEAK ISR_VECTOR_SECTION WEAK void (* WEAK const WEAK vectors[])(void) =
+ISR_VECTOR_SECTION void (* WEAK const vectors[])(void) =
 {
   (void (*)(void))((unsigned long)resetStack+sizeof(resetStack)),
                                          /* 0000 - The initial stack pointer */
