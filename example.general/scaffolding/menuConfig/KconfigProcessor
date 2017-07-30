@@ -1,0 +1,280 @@
+#
+# For a description of the syntax of this configuration file,
+# see misc/tools/kconfig-language.txt.
+#
+
+menu "Processor type and features"
+
+config ARM_CORTEX_M4
+    bool
+    default n
+
+config ARM_CORTEX_M3
+    bool
+    default n
+
+config STM32F4XX
+    bool
+    default n
+
+if STM32F4
+
+config STM_SRAM_128K
+    bool
+    default n
+
+config STM_SRAM_192K
+    bool
+    default n
+
+config STM_CCM_64K
+    bool
+    default n
+
+config STM_FLASH_512K
+    bool
+    default n
+
+config STM_FLASH_1M
+    bool
+    default n
+
+config STM_FLASH_2M
+    bool
+    default n
+
+
+config STM32F405XEXX
+    bool
+    select ARM_CORTEX_M4
+    select STM32F4XX
+    select STM_SRAM_128K
+    select STM_CCM_64K
+    select STM_FLASH_512K
+    help
+     "STM32F405xExx"
+
+
+config STM32F405XGXX
+    bool
+    select ARM_CORTEX_M4
+    select STM32F4XX
+    select STM_SRAM_128K
+    select STM_CCM_64K
+    select STM_FLASH_1M
+    help
+
+
+config STM32F407XEXX
+    bool
+    select ARM_CORTEX_M4
+    select STM32F4XX
+    select STM_SRAM_128K
+    select STM_CCM_64K
+    select STM_FLASH_512K
+    help
+      "STM32F407xExx"
+      The STM32F07 is a ARM 32-bit Cortex(TM)-M4 CPU with FPU, Adaptive real-time accelerator
+      (ART Accelerator(TM)) allowing 0-wait state execution from Flash memory, frequency up
+      to 168 MHz, memory protection unit, 210 DMIPS/1.25 DMIPS/MHz (Dhrystone 2.1), and DSP instructions
+      * Memories
+      – 512 Kytes of Flash memory
+      – Up to 192+4 Kbytes of SRAM including 64-Kbyte of CCM (core coupled memory) data RAM
+      – Flexible static memory controller supporting Compact Flash, SRAM, PSRAM, NOR and NAND memories
+
+config STM32F407XGXX
+    bool
+    select ARM_CORTEX_M4
+    select STM32F4XX
+    select STM_SRAM_128K
+    select STM_CCM_64K
+    select STM_FLASH_1M
+    help
+      "STM32F407xGxx"
+      The STM32F07 is a ARM 32-bit Cortex(TM)-M4 CPU with FPU, Adaptive real-time accelerator
+      (ART Accelerator(TM)) allowing 0-wait state execution from Flash memory, frequency up
+      to 168 MHz, memory protection unit, 210 DMIPS/1.25 DMIPS/MHz (Dhrystone 2.1), and DSP instructions
+      * Memories
+      – 1024 Kytes of Flash memory
+      – Up to 192+4 Kbytes of SRAM including 64-Kbyte of CCM (core coupled memory) data RAM
+      – Flexible static memory controller supporting Compact Flash, SRAM, PSRAM, NOR and NAND memories
+
+
+config STM32F437XGXX
+    bool
+    select ARM_CORTEX_M4
+    select STM32F4XX
+    select STM_SRAM_192K
+    select STM_CCM_64K
+    select STM_FLASH_1M
+    help
+      "STM32F437xGxx"
+      The STM32F37xGxx is a ARM 32-bit Cortex(TM)-M4 CPU with FPU, Adaptive real-time accelerator
+      (ART Accelerator(TM)) allowing 0-wait state execution from Flash memory, frequency up
+      to 168 MHz, memory protection unit, 210 DMIPS/1.25 DMIPS/MHz (Dhrystone 2.1), and DSP instructions
+      * Memories
+      – 1024 Kytes of Flash memory
+      – Up to 256+4 Kbytes of SRAM including 64-Kbyte of CCM (core coupled memory) data RAM
+      – Flexible static memory controller supporting Compact Flash, SRAM, PSRAM, NOR and NAND memories
+
+config STM32F437XIXX
+    bool
+    select ARM_CORTEX_M4
+    select STM32F4XX
+    select STM_SRAM_192K
+    select STM_CCM_64K
+    select STM_FLASH_2M
+    help
+      "STM32F437xIxx"
+      The STM32F37xIxx is a ARM 32-bit Cortex(TM)-M4 CPU with FPU, Adaptive real-time accelerator
+      (ART Accelerator(TM)) allowing 0-wait state execution from Flash memory, frequency up
+      to 168 MHz, memory protection unit, 210 DMIPS/1.25 DMIPS/MHz (Dhrystone 2.1), and DSP instructions
+      * Memories
+      – 2048 Kytes of Flash memory
+      – Up to 256+4 Kbytes of SRAM including 64-Kbyte of CCM (core coupled memory) data RAM
+      – Flexible static memory controller supporting Compact Flash, SRAM, PSRAM, NOR and NAND memories
+
+
+#      Select ST Microelectronics Std Peripheral Library Define to match the processor.
+
+config STM32F40_41XXX
+    bool
+    default y if STM32F405XEXX
+    default y if STM32F405XGXX
+    default y if STM32F407XEXX
+    default y if STM32F407XGXX
+    default n
+    help
+      "STM32F40_41xxx"
+      STM32F405RG, STM32F405VG, STM32F405ZG, STM32F415RG, STM32F415VG, STM32F415ZG,
+      STM32F407VG, STM32F407VE, STM32F407ZG, STM32F407ZE, STM32F407IG, STM32F407IE,
+      STM32F417VG, STM32F417VE, STM32F417ZG, STM32F417ZE, STM32F417IG and STM32F417IE Devices
+
+config STM32F427_437XX
+    bool
+    default y if  STM32F437XGXX
+    default y if  STM32F437XIXX
+    default n
+    help
+      "STM32F427_437xx"
+      STM32F427VG, STM32F427VI, STM32F427ZG, STM32F427ZI, STM32F427IG, STM32F427II,
+      STM32F437VG, STM32F437VI, STM32F437ZG, STM32F437ZI, STM32F437IG, STM32F437II Devices
+
+config STM32F429_439XX
+    bool
+    default n
+    help
+      "STM32F429_439xx"
+      STM32F429VG, STM32F429VI, STM32F429ZG, STM32F429ZI, STM32F429BG, STM32F429BI,
+      STM32F429NG, STM32F439NI, STM32F429IG, STM32F429II, STM32F439VG, STM32F439VI,
+      STM32F439ZG, STM32F439ZI, STM32F439BG, STM32F439BI, STM32F439NG, STM32F439NI,
+      STM32F439IG and STM32F439II Devices
+
+config STM32F401XX
+    bool
+    default n
+    help
+      STM32F401CB, STM32F401CC,  STM32F401RB,  STM32F401RC, STM32F401VB and STM32F401VC Devices
+
+
+config MCU_PART
+    string
+    default "STM32F407XEXX" if STM32F407XEXX
+    default "STM32F407XGXX" if STM32F407XGXX
+    default "STM32F437XGXX" if STM32F437XGXX
+    default "STM32F437XIXX" if STM32F437XIXX
+    default "REPLACE-W-MCU-PART-NUMBER"
+
+config MCU
+    string
+    default "STM32F4xx" if STM32F407XEXX
+    default "STM32F4xx" if STM32F407XGXX
+    default "STM32F4xx" if STM32F437XGXX
+    default "STM32F4xx" if STM32F437XIXX
+    default "REPLACE-W-MCU-PART-NUMBER"
+
+
+
+endif # if STM32F4
+
+if LM3S
+choice
+    prompt "Select TI Stellaris MCU Part Number"
+    default LM3S8962
+    help
+      Select the system on a chip MicroController Unit part number we are targeting.
+
+config LM3S2110
+       bool "LM3S2110"
+       select ARM_CORTEX_M3
+       help
+         TI Stelaris LM3S2110 MCU.
+
+config LM3S8962
+       bool "LM3S8962"
+       select ARM_CORTEX_M3
+       help
+         TI Stelaris LM3S8962 MCU.
+
+config LM3S9B96
+       bool "LM3S9B96"
+       select ARM_CORTEX_M3
+       help
+         TI Stelaris LM3S9B96 MCU.
+
+endchoice
+
+config MCU_PART
+       string
+       default "LM3S8962" if LM3S8962
+       default "REPLACE-W-MCU-PART-NUMBER"
+
+config MCU
+       string
+       default "LM3S8962" if LM3S8962
+       default "REPLACE-W-MCU-PART-NUMBER"
+
+
+endif # if LM3S
+
+
+if NRF52
+
+config NRF_SRAM_64K
+    bool
+    default n
+
+config NRF_FLASH_512K
+    bool
+    default n
+
+choice
+    prompt "Select Nordic MCU Part Number"
+    default NRF52832
+    help
+      Select the system on a chip MicroController Unit part number we are targeting.
+
+config NRF52832
+       bool "NRF52832"
+       select ARM_CORTEX_M4
+       select NRF_SRAM_64K
+       select NRF_FLASH_512K
+       help
+         Nordic NRF52832 MCU.
+
+endchoice
+
+config MCU_PART
+       string
+       default "NRF52832" if NRF52832
+       default "REPLACE-W-MCU-PART-NUMBER"
+
+config MCU
+       string
+       default "NRF52832" if NRF52832
+       default "REPLACE-W-MCU-PART-NUMBER"
+
+
+endif # if NRF52
+
+endmenu #"Processor type and features"

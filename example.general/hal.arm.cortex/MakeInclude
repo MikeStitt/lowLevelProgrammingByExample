@@ -1,0 +1,2 @@
+# Adding Includes
+INCLUDE_DIRS-y                                 += -I../$(HAL_ARM_CORTEX_DIR)/source

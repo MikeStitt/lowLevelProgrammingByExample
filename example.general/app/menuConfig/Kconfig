@@ -1,0 +1,11 @@
+mainmenu "Application Configuration"
+
+# CONFIGURED is a flag to the Makefile that make menuconfig completed
+#
+config CONFIGURED
+    bool
+    default y
+
+source "../app.contents/menuConfig/KconfigApp"
+
+source "../scaffolding/menuConfig/KconfigScaffolding"

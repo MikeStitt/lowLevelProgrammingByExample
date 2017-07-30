@@ -1,0 +1,123 @@
+#
+# For a description of the syntax of this configuration file,
+# see misc/tools/kconfig-language.txt.
+#
+
+config LM3S
+       bool
+
+config NRF52
+       bool
+
+config STM32F4
+       bool
+
+config APP_SELECTS_BOARD
+       bool
+       default n
+
+config BRD_HAS_NETWORK
+       bool
+       default n
+
+#@todo RMS kill this off
+config DIO_CONFIG_IN_BSP
+       bool
+       default y if BUILT_FROM_BSP_DIR
+       default n
+
+#@todo RMS kill this off
+config UART_CONFIG_IN_BSP
+       bool
+       default y if BUILT_FROM_BSP_DIR
+       default n
+
+
+menu "Board Configuration"
+
+depends on !APP_SELECTS_BOARD
+
+choice
+    prompt "Select Board"
+    default BRD_CUST_0000_0001_PROTOTYPE_ENA
+
+config STM32F40G_EVAL_ENA
+    bool "STM32F40G-EVAL"
+    select STM32F40G_EVAL
+
+config STM32F437I_EVAL_ENA
+    bool "STM32F437I-EVAL"
+    select STM32F437I_EVAL
+
+config BRD_CUST_0000_0001_PROTOTYPE_ENA
+    bool "BRD-CUST-0000-0001-PROTOTYPE"
+    select BRD_CUST_0000_0001_PROTOTYPE
+
+config LM3S8962_EVAL_ENA
+    bool "TI LM3S8962 Evaluation Board"
+    select LM3S8962_EVAL
+
+config NRF52_DK_ENA
+    bool "Nordic nRF52-DK Board"
+    select NRF52_DK
+
+endchoice # "Select Board"
+
+endmenu # "Board Configuration"
+
+
+config STM32F40G_EVAL
+    bool
+    select STM32F4
+    select STM32F4_MCO1_CLK_ENA
+    select STM32F407XGXX
+    select BRD_HAS_NETWORK
+
+config STM32F437I_EVAL
+    bool
+    select STM32F4
+    select STM32F4_MCO1_CLK_ENA
+    select STM32F437XIXX
+    select BRD_HAS_NETWORK
+
+config BRD_CUST_0000_0001_PROTOTYPE
+    bool
+    select STM32F4
+    select STM32F437XGXX
+    select BRD_HAS_NETWORK
+
+config LM3S8962_EVAL
+    bool
+    select LM3S
+    select BRD_HAS_NETWORK
+
+config NRF52_DK
+    bool
+    select NRF52
+
+#####
+
+config BRD_STM32F40G
+    int
+    default 1 if STM32F40G_EVAL
+    default 0
+
+config BRD_STM32F437I
+    int
+    default 1 if STM32F437I_EVAL
+    default 0
+
+config BRD_CUST_0000_0001
+    int
+    default 1 if BRD_CUST_0000_0001_PROTOTYPE
+    default 0
+
+config BRD_LM3S8962_EVAL
+    int
+    default 1 if LM3S8962_EVAL
+    default 0
+
+config BRD_NRF52_DK
+    int
+    default 1 if NRF52_DK
+    default 0

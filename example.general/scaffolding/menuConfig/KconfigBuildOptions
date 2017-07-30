@@ -1,0 +1,390 @@
+#
+# For a description of the syntax of this configuration file,
+# see misc/tools/kconfig-language.txt.
+#
+
+menu "Build Options"
+
+choice
+    prompt "Build Host Platform"
+    default HOST_LINUX
+
+config HOST_LINUX
+    bool "Linux"
+
+#config HOST_WINDOWS
+#   bool "Windows"
+
+config HOST_OTHER
+    bool "Other"
+
+endchoice
+
+#
+# @todo because we use defaults to set these flags rather than a
+# pure select system, if one changes from one board to another
+# there are situations where the flags do not move to the
+# correct settings. To fix this remove the .config file
+# and then when re-running make menuconfig or  make nconfig
+# immediately select the board you want.
+#
+# It's possible that we could fix the above problem using the
+# select system, but then we would not be able to override the
+# compiler settings on an experimental basis.  It's also possible
+# that there may not be a simple way to get selects to set string
+# values.
+#
+
+config CROSS_COMPILE
+    string "Cross-compiler tool prefix"
+    default 'arm-none-eabi-'
+    help
+      Same as running 'make CROSS_COMPILE=prefix-' but stored for
+      default make runs in this kernel build directory.  You don't
+      need to set this unless you want the configured kernel build
+      directory to select the cross-compiler automatically.
+
+      Set to something like "arm-none-eabi-" or "/opt/ARM/bin/arm-none-eabi-"
+
+choice
+    prompt "Toolchain CPU Options"
+    default USE_MTHUMB_MCPU_CORTEX_M3 if LM3S
+    default USE_MTHUMB_MCPU_CORTEX_M3 if STM32F
+    default USE_MTHUMB_MCPU_CORTEX_M4_MFLOAT_HARD_FPV4_SP_D16 if NRF52
+#TODO move to this to turn on hard floating point
+#       default USE_MTHUMB_MCPU_CORTEX_M4_MFLOAT_HARD_FPV4_SP_D16 if STM32F
+    default USE_MTHUMB_MCPU_CORTEX_M3
+
+config USE_MTHUMB_MCPU_CORTEX_M0_PLUS
+    bool "-mthumb -mcpu=cortex-m0plus"
+    help
+         Let MCU selection set this.
+
+config USE_MTHUMB_MCPU_CORTEX_M0
+    bool "-mthumb -mcpu=cortex-m0"
+    help
+         Let MCU selection set this.
+
+config USE_MTHUMB_MCPU_CORTEX_M1
+    bool "-mthumb -mcpu=cortex-m1"
+    help
+         Let MCU selection set this.
+
+config USE_MTHUMB_MARCH_ARMV6_M
+    bool "-mthumb -march=armv6-m"
+    help
+         Let MCU selection set this.
+
+config USE_MTHUMB_MCPU_CORTEX_M3
+    bool "-mthumb -mcpu=cortex-m3"
+    help
+         Let MCU selection set this.
+
+config USE_MTHUMB_MARCH_ARMV6_M
+    bool "-mthumb -march=armv7-m"
+    help
+         Let MCU selection set this.
+
+config USE_MTHUMB_MCPU_CORTEX_M4
+    bool "-mthumb -mcpu=cortex-m4"
+    help
+         Let MCU selection set this.
+
+config USE_MTHUMB_MARCH_ARMV7E_M
+    bool "-mthumb -march=armv7e-m"
+    help
+         Let MCU selection set this.
+
+config USE_MTHUMB_MCPU_CORTEX_M4_SOFTFP_FPV4_SP_D16
+    bool "-mthumb -mcpu=cortex-m4 -mfloat-abi=softfp -mfpu=fpv4-sp-d16"
+    help
+         Let MCU selection set this.
+
+config USE_MTHUMB_MARCH_ARMV7E_M_SOFTFP_FPV4_SP_D16
+    bool "-mthumb -march=armv7e-m -mfloat-abi=softfp -mfpu=fpv4-sp-d16"
+    help
+         Let MCU selection set this.
+
+config USE_MTHUMB_MCPU_CORTEX_M4_MFLOAT_HARD_FPV4_SP_D16
+    bool "-mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16"
+    help
+         Let MCU selection set this.
+
+config USE_MTHUMB_MARCH_ARMV7E_M_MFLOAT_HARD_FPV4_SP_D16
+    bool "-mthumb -march=armv7e-m -mfloat-abi=hard -mfpu=fpv4-sp-d16"
+    help
+         Let MCU selection set this.
+
+config USE_MARCH_ARMV7_R
+    bool "-march=armv7-r"
+    help
+         Let MCU selection set this.
+
+config USE_MTHUMB_MARCH_ARMV7_R
+    bool "-mthumb -march=armv7-r"
+    help
+         Let MCU selection set this.
+
+config USE_MARCH_ARMV7_R_SOFTFP_VFPV3_D16
+    bool "-march=armv7-r -mfloat-abi=softfp -mfpu=vfpv3-d16"
+    help
+         Let MCU selection set this.
+
+config USE_MTHUMB_MARCH_ARMV7_R_SOFTFP_VFPV3_D16
+    bool "-mthumb -march=armv7-r -mfloat-abi=softfp -mfpu=vfpv3-d16"
+    help
+         Let MCU selection set this.
+
+config USE_MARCH_ARMV7_R_MFLOAT_HARD_VFPV3_D16
+    bool "-march=armv7-r -mfloat-abi=hard -mfpu=vfpv3-d16"
+    help
+         Let MCU selection set this.
+
+config USE_MTHUMB_MARCH_ARMV7_R_MFLOAT_HARD_VFPV3_D16
+    bool "-mthumb -march=armv7-r -mfloat-abi=hard -mfpu=vfpv3-d16"
+    help
+         Let MCU selection set this.
+
+config USE_MARCH_ARMV7_A
+    bool "-march=armv7-a"
+    help
+         Let MCU selection set this.
+
+config USE_MTHUMB_MARCH_ARMV7_A
+    bool "-mthumb -march=armv7-a"
+    help
+         Let MCU selection set this.
+
+config USE_MARCH_ARMV7_A_SOFTFP_VFPV3_D16
+    bool "-march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16"
+    help
+         Let MCU selection set this.
+
+config USE_MTHUMB_MARCH_ARMV7_A_SOFTFP_VFPV3_D16
+    bool "-mthumb -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16"
+    help
+         Let MCU selection set this.
+
+config USE_MARCH_ARMV7_R_MFLOAT_HARD_VFPV3_D16
+    bool "-march=armv7-a -mfloat-abi=hard -mfpu=vfpv3-d16"
+    help
+         Let MCU selection set this.
+
+config USE_MTHUMB_MARCH_ARMV7_A_MFLOAT_HARD_VFPV3_D16
+    bool "-mthumb -march=armv7-a -mfloat-abi=hard -mfpu=vfpv3-d16"
+    help
+         Let MCU selection set this.
+
+endchoice
+
+config TOOLCHAIN_USE_MTHUMB
+    bool
+    default y if USE_MTHUMB_MCPU_CORTEX_M0_PLUS
+    default y if USE_MTHUMB_MCPU_CORTEX_M0
+    default y if USE_MTHUMB_MCPU_CORTEX_M1
+    default y if USE_MTHUMB_MARCH_ARMV6_M
+    default y if USE_MTHUMB_MCPU_CORTEX_M3
+    default y if USE_MTHUMB_MARCH_ARMV6_M
+    default y if USE_MTHUMB_MCPU_CORTEX_M4
+    default y if USE_MTHUMB_MARCH_ARMV7E_M
+    default y if USE_MTHUMB_MCPU_CORTEX_M4_SOFTFP_FPV4_SP_D16
+    default y if USE_MTHUMB_MARCH_ARMV7E_M_SOFTFP_FPV4_SP_D16
+    default y if USE_MTHUMB_MCPU_CORTEX_M4_MFLOAT_HARD_FPV4_SP_D16
+    default y if USE_MTHUMB_MARCH_ARMV7E_M_MFLOAT_HARD_FPV4_SP_D16
+    default y if USE_MTHUMB_MARCH_ARMV7_R
+    default y if USE_MTHUMB_MARCH_ARMV7_R_SOFTFP_VFPV3_D16
+    default y if USE_MTHUMB_MARCH_ARMV7_R_MFLOAT_HARD_VFPV3_D16
+    default y if USE_MTHUMB_MARCH_ARMV7_A
+    default y if USE_MTHUMB_MARCH_ARMV7_A_SOFTFP_VFPV3_D16
+    default y if USE_MTHUMB_MARCH_ARMV7_A_MFLOAT_HARD_VFPV3_D16
+    default n
+
+config TOOLCHAIN_MCPU_EQ
+    string
+    default "-mcpu=cortex-m0plus" if USE_MTHUMB_MCPU_CORTEX_M0_PLUS
+    default "-mcpu=cortex-m0" if USE_MTHUMB_MCPU_CORTEX_M0
+    default "-mcpu=cortex-m1" if USE_MTHUMB_MCPU_CORTEX_M1
+    default "-mcpu=cortex-m3" if USE_MTHUMB_MCPU_CORTEX_M3
+    default "-mcpu=cortex-m4" if USE_MTHUMB_MCPU_CORTEX_M4
+    default "-mcpu=cortex-m4" if USE_MTHUMB_MCPU_CORTEX_M4_SOFTFP_FPV4_SP_D16
+    default "-mcpu=cortex-m4" if USE_MTHUMB_MCPU_CORTEX_M4_MFLOAT_HARD_FPV4_SP_D16
+    default ""
+
+config TOOLCHAIN_MARCH_EQ
+    string
+    default "-march=armv6-m" if USE_MTHUMB_MARCH_ARMV6_M
+    default "-march=armv7-m" if USE_MTHUMB_MARCH_ARMV6_M
+    default "-march=armv7e-m" if USE_MTHUMB_MARCH_ARMV7E_M
+    default "-march=armv7e-m" if USE_MTHUMB_MARCH_ARMV7E_M_SOFTFP_FPV4_SP_D16
+    default "-march=armv7e-m" if USE_MTHUMB_MARCH_ARMV7E_M_MFLOAT_HARD_FPV4_SP_D16
+    default "-march=armv7-r" if USE_MARCH_ARMV7_R
+    default "-march=armv7-r" if USE_MTHUMB_MARCH_ARMV7_R
+    default "-march=armv7-r" if USE_MARCH_ARMV7_R_SOFTFP_VFPV3_D16
+    default "-march=armv7-r" if USE_MTHUMB_MARCH_ARMV7_R_SOFTFP_VFPV3_D16
+    default "-march=armv7-r" if USE_MARCH_ARMV7_R_MFLOAT_HARD_VFPV3_D16
+    default "-march=armv7-r" if USE_MTHUMB_MARCH_ARMV7_R_MFLOAT_HARD_VFPV3_D16
+    default "-march=armv7-a" if USE_MARCH_ARMV7_A
+    default "-march=armv7-a" if USE_MTHUMB_MARCH_ARMV7_A
+    default "-march=armv7-a" if USE_MARCH_ARMV7_A_SOFTFP_VFPV3_D16
+    default "-march=armv7-a" if USE_MTHUMB_MARCH_ARMV7_A_SOFTFP_VFPV3_D16
+    default "-march=armv7-a" if USE_MARCH_ARMV7_R_MFLOAT_HARD_VFPV3_D16
+    default "-march=armv7-a" if USE_MTHUMB_MARCH_ARMV7_A_MFLOAT_HARD_VFPV3_D16
+    default ""
+
+config TOOLCHAIN_MFLOAT_ABI_EQ
+    string
+    default "-mfloat-abi=softfp"   if USE_MTHUMB_MCPU_CORTEX_M4_SOFTFP_FPV4_SP_D16
+    default "-mfloat-abi=softfp"   if USE_MTHUMB_MARCH_ARMV7E_M_SOFTFP_FPV4_SP_D16
+    default "-mfloat-abi=hard"     if USE_MTHUMB_MCPU_CORTEX_M4_MFLOAT_HARD_FPV4_SP_D16
+    default "-mfloat-abi=hard"     if USE_MTHUMB_MARCH_ARMV7E_M_MFLOAT_HARD_FPV4_SP_D16
+    default "-mfloat-abi=softfp"   if USE_MARCH_ARMV7_R_SOFTFP_VFPV3_D16
+    default "-mfloat-abi=softfp"   if USE_MTHUMB_MARCH_ARMV7_R_SOFTFP_VFPV3_D16
+    default "-mfloat-abi=hard"     if USE_MARCH_ARMV7_R_MFLOAT_HARD_VFPV3_D16
+    default "-mfloat-abi=hard"     if USE_MTHUMB_MARCH_ARMV7_R_MFLOAT_HARD_VFPV3_D16
+    default "-mfloat-abi=softfp"   if USE_MARCH_ARMV7_A_SOFTFP_VFPV3_D16
+    default "-mfloat-abi=softfp"   if USE_MTHUMB_MARCH_ARMV7_A_SOFTFP_VFPV3_D16
+    default "-mfloat-abi=hard"     if USE_MARCH_ARMV7_R_MFLOAT_HARD_VFPV3_D16
+    default "-mfloat-abi=hard"     if USE_MTHUMB_MARCH_ARMV7_A_MFLOAT_HARD_VFPV3_D16
+    default ""
+
+config TOOLCHAIN_MFPU_EQ
+    string
+    default "-mfpu=fpv4-sp-d16" if USE_MTHUMB_MCPU_CORTEX_M4_SOFTFP_FPV4_SP_D16
+    default "-mfpu=fpv4-sp-d16" if USE_MTHUMB_MARCH_ARMV7E_M_SOFTFP_FPV4_SP_D16
+    default "-mfpu=fpv4-sp-d16" if USE_MTHUMB_MCPU_CORTEX_M4_MFLOAT_HARD_FPV4_SP_D16
+    default "-mfpu=fpv4-sp-d16" if USE_MTHUMB_MARCH_ARMV7E_M_MFLOAT_HARD_FPV4_SP_D16
+    default "-mfpu=vfpv3-d16"   if USE_MARCH_ARMV7_R_SOFTFP_VFPV3_D16
+    default "-mfpu=vfpv3-d16"   if USE_MTHUMB_MARCH_ARMV7_R_SOFTFP_VFPV3_D16
+    default "-mfpu=vfpv3-d16"   if USE_MARCH_ARMV7_R_MFLOAT_HARD_VFPV3_D16
+    default "-mfpu=vfpv3-d16"   if USE_MTHUMB_MARCH_ARMV7_R_MFLOAT_HARD_VFPV3_D16
+    default "-mfpu=vfpv3-d16"   if USE_MARCH_ARMV7_A_SOFTFP_VFPV3_D16
+    default "-mfpu=vfpv3-d16"   if USE_MTHUMB_MARCH_ARMV7_A_SOFTFP_VFPV3_D16
+    default "-mfpu=vfpv3-d16"   if USE_MARCH_ARMV7_R_MFLOAT_HARD_VFPV3_D16
+    default "-mfpu=vfpv3-d16"   if USE_MTHUMB_MARCH_ARMV7_A_MFLOAT_HARD_VFPV3_D16
+    default ""
+
+config TOOLCHAIN_MFPU_FPV4_SP_D16
+    boolean
+    default y if USE_MTHUMB_MCPU_CORTEX_M4_SOFTFP_FPV4_SP_D16
+    default y if USE_MTHUMB_MARCH_ARMV7E_M_SOFTFP_FPV4_SP_D16
+    default y if USE_MTHUMB_MCPU_CORTEX_M4_MFLOAT_HARD_FPV4_SP_D16
+    default y if USE_MTHUMB_MARCH_ARMV7E_M_MFLOAT_HARD_FPV4_SP_D16
+
+config TOOLCHAIN_MFPU_VFPV3_D16
+    boolean
+    default y if USE_MARCH_ARMV7_R_SOFTFP_VFPV3_D16
+    default y if USE_MTHUMB_MARCH_ARMV7_R_SOFTFP_VFPV3_D16
+    default y if USE_MARCH_ARMV7_R_MFLOAT_HARD_VFPV3_D16
+    default y if USE_MTHUMB_MARCH_ARMV7_R_MFLOAT_HARD_VFPV3_D16
+    default y if USE_MARCH_ARMV7_A_SOFTFP_VFPV3_D16
+    default y if USE_MTHUMB_MARCH_ARMV7_A_SOFTFP_VFPV3_D16
+    default y if USE_MARCH_ARMV7_R_MFLOAT_HARD_VFPV3_D16
+    default y if USE_MTHUMB_MARCH_ARMV7_A_MFLOAT_HARD_VFPV3_D16
+
+config TOOLCHAIN_MFPU
+    boolean
+    default y if TOOLCHAIN_MFPU_FPV4_SP_D16
+    default y if TOOLCHAIN_MFPU_VFPV3_D16
+
+config FREERTOS_PORT_ARM_CM3
+    boolean
+    default y if USE_MTHUMB_MCPU_CORTEX_M3
+    default y if USE_MTHUMB_MCPU_CORTEX_M4
+
+config FREERTOS_PORT_ARM_CM4F
+    boolean
+    default y if USE_MTHUMB_MCPU_CORTEX_M4_SOFTFP_FPV4_SP_D16
+    default y if USE_MTHUMB_MCPU_CORTEX_M4_MFLOAT_HARD_FPV4_SP_D16
+
+choice
+    prompt "Optimisation Level"
+    default OPTIMISE_OS
+
+config OPTIMISE_O0
+    bool "No Optimisations"
+
+config OPTIMISE_O1
+    bool "Optimise level -O1"
+
+config OPTIMISE_O2
+    bool "Optimise level -O2"
+
+config OPTIMISE_O3
+    bool "Optimise level -O3"
+
+config OPTIMISE_OS
+    bool "Optimise for size"
+
+endchoice
+
+config TOOLCHAIN_OPTIMISATION
+    string
+    default "-O0" if OPTIMISE_O0
+    default "-O1" if OPTIMISE_O1
+    default "-O2" if OPTIMISE_O2
+    default "-O3" if OPTIMISE_O3
+    default "-Os" if OPTIMISE_OS
+    default ""
+
+
+config TOOLCHAIN_DEBUG
+    bool "Debug Symbols"
+    default y
+
+config QUIET_BUILD
+    bool "Enable quiet build, \"Q=@\". Otherwise, verbose build \"Q=#@\""
+    default y
+
+menu "Toolchain Error,Warning,Verbose Options"
+
+config TOOLCHAIN_PEDANTIC
+    tristate "-pedantic"
+    default n
+
+config TOOLCHAIN_WALL
+    tristate "-Wall - Warn about avoidable questionable constructions."
+    default y
+
+config TOOLCHAIN_WERROR
+    tristate "-Werror - Make all warnings into errors."
+    default y
+
+config TOOLCHAIN_VERBOSE
+    tristate "-v Verbose mode. Print out GNU CPP's version number at the beginning of execution, and report the final form of the include path."
+    default n
+
+config TOOLCHAIN_PRTHEADERS
+    tristate "-H Print the name of each header file used."
+    default n
+
+endmenu
+
+choice
+    prompt "Windows Build Environment"
+    default WINDOWS_CYGWIN
+    depends on HOST_WINDOWS
+
+config WINDOWS_NATIVE
+    bool "Windows Native"
+    ---help---
+        Build natively in a CMD.exe environment with Windows style paths (like C:\cgywin\home)
+
+config WINDOWS_CYGWIN
+    bool "Cygwin"
+    ---help---
+        Build natively in a Cygwin environment with POSIX style paths (like /cygdrive/c/cgywin/home)
+
+config WINDOWS_MSYS
+    bool "MSYS"
+    ---help---
+        Build natively in a Cygwin environment with POSIX style paths (like /cygdrive/c/cgywin/home)
+
+config WINDOWS_OTHER
+    bool "Windows POSIX-like environment"
+    ---help---
+        Build natively in another POSIX-like environment.  Additional support may be necessary
+
+endchoice
+
+endmenu
+

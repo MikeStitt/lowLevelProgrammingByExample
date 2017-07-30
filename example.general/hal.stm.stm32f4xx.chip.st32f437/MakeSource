@@ -1,0 +1,2 @@
+SOURCE-y                                     += ../$(HAL_CHIP_DIR)/source/startup/resetVectorTable.c
+

@@ -1,0 +1,2 @@
+# Example of how to add source file to the list.
+SOURCE-y += ../$(APP_CONTENTS_DIR)/source/startup/main.c

@@ -1,0 +1,11 @@
+# Adding Includes
+INCLUDE_DIRS-y                                      += -I../$(HAL_STM_STM32F4XX_COMMON_DIR)/include
+INCLUDE_DIRS-y                                      += -I../$(HAL_STM_STM32F4XX_COMMON_DIR)/source
+#
+INCLUDE_DIRS-y                                      += -I../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/CMSIS/Include
+INCLUDE_DIRS-y                                      += -I../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/CMSIS/Device/ST/STM32F4xx/Include
+INCLUDE_DIRS-y                                      += -I../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Libraries/STM32F4xx_StdPeriph_Driver/inc
+INCLUDE_DIRS-y                                      += -I../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Utilities/STM32_EVAL/Common
+INCLUDE_DIRS-$(CONFIG_STM32F40G_EVAL)               += -I../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Utilities/STM32_EVAL/STM3240_41_G_EVAL
+INCLUDE_DIRS-$(CONFIG_STM32F437I_EVAL)              += -I../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Utilities/STM32_EVAL/STM324x7I_EVAL
+INCLUDE_DIRS-$(CONFIG_BRD_CUST_0000_0001_PROTOTYPE) += -I../$(HAL_STM_STM32FPERIPHERALLIB_DIR)/Utilities/STM32_EVAL/STM324x7I_EVAL

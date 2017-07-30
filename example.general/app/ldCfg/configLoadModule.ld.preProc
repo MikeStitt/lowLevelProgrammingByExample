@@ -1,0 +1,106 @@
+#include "memoryMap.h"
+
+MEMORY
+{
+    FLASH_READ (rx)     : ORIGIN = SW_FLASH_ADR, LENGTH = SW_FLASH_LEN
+    RAM (rw)            : ORIGIN = SW_RAM_ADR, LENGTH = SW_RAM_LEN
+#ifdef BUILD_AN_APP
+    RAM_KEEP (rw)       : ORIGIN = RAM_KEEP_THROUGH_RESET_ADR, LENGTH = RAM_KEEP_THROUGH_RESET_LEN
+    RAM_RESET_STACK(rw) : ORIGIN = RAM_APP_RESET_STACK, LENGTH = RAM_APP_RESET_STACK_LEN
+#endif
+}
+
+ENTRY(Reset_Handler)
+
+//  _Min_Heap_Size is the heap size for newLib. See include/FreeRTOSconfig.h for the FreeRTOS heap.
+
+_Min_Heap_Size = 0x0;
+
+SECTIONS
+{
+    .text :
+    {
+        _startIsrVector = .;
+        KEEP(*(.isr_vector))
+        . = 0x200;
+        *(.progHeader)
+        *(.text*)
+        *(.rodata*)
+        *(.glue_7)
+        *(.glue_7t)
+        *(.eh_frame)
+
+        KEEP (*(.init))
+        KEEP (*(.fini))
+
+    } > FLASH_READ
+
+    .ARM :
+    {
+        . = ALIGN(4);
+
+        __exidx_start = .;
+        *(.ARM.exidx* .gnu.linkonce.armexidx.*)
+        __exidx_end = .;
+    
+    } > FLASH_READ
+
+    . = ALIGN(4);
+    
+    // .data contains globals and statics with initial values that are copied
+    // from ROM to RAM on startup.
+    //
+    // _startInitSourceData = where to start copying from
+    // _endInitSourceData   = where to stop copying from
+     
+      _startInitSourceData = .;
+#if defined( BUILD_AN_APP )
+    /*
+     * .ram_keep is ram that we don't want to zero on reset.
+     */
+     .ram_keep (NOLOAD) :
+     {
+         *(.ram_keep)
+     } > RAM_KEEP
+    /*
+     * .reset_stack is ram that we don't want to zero on reset.
+     */
+     .reset_stack (NOLOAD) :
+     {
+         *(.reset_stack)
+     } > RAM_RESET_STACK
+#endif
+
+    .data : AT ( _startInitSourceData )
+    {
+        . = ALIGN(4);
+        _startInitDestinationData = .;
+        *(.data*)
+        . = ALIGN(4);
+        _endInitDestinationData = .;
+
+    } > RAM
+    
+    .bss (NOLOAD):
+    {
+        . = ALIGN(4);
+        _startBss = .;
+        *(.bss*)
+        *(COMMON)
+        . = ALIGN(4);
+        _endBss = .;
+
+    } > RAM
+
+    // Allocate user heap space for newlib _sbrk
+    ._newlib_heap (NOLOAD) :
+    {
+        . = ALIGN(4);
+        end = . ;
+        _heap_start = . ;
+        . = . + _Min_Heap_Size;
+        . = ALIGN(4);
+        _heap_end = . ;
+
+    } > RAM
+}

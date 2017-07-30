@@ -1,0 +1,46 @@
+#
+# For a description of the syntax of this configuration file,
+# see misc/tools/kconfig-language.txt.
+#
+
+menu "NewLib Configuration"
+
+choice
+        prompt "Newlib version"
+        default NEWLIB_NORM_DEBUG
+
+config NEWLIB_NORM_NO_DEBUG
+    bool "Normal newlib - No Debug"
+
+config NEWLIB_NORM_DEBUG
+    bool "Normal newlib - Debug"
+
+config NEWLIB_NANO_NO_DEBUG
+    bool "Newlib Nano - No Debug"
+
+config NEWLIB_NANO_DEBUG
+    bool "Newlib Nano - Debug"
+
+endchoice
+
+config NEWLIB_NORM
+   bool
+   default y if NEWLIB_NORM_NO_DEBUG
+   default y if NEWLIB_NORM_DEBUG
+   default n
+
+config NEWLIB_NANO
+   bool
+   default y if NEWLIB_NANO_NO_DEBUG
+   default y if NEWLIB_NANO_DEBUG
+   default n
+
+config NEWLIB_MALLOC_CAUSE_LINK_ERROR
+   bool "Disable newlib malloc - cause link error when used."
+   default y
+
+config NEWLIB_REENTRANT_CAUSE_LINK_ERROR
+   bool "Disable functions that need reent - cause link error when used."
+   default y
+
+endmenu

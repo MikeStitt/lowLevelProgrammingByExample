@@ -1,0 +1,2 @@
+INCLUDE_DIRS-y                                 += -I../$(HAL_CHIP_DIR)/include
+INCLUDE_DIRS-y                                 += -I../$(HAL_CHIP_DIR)/source

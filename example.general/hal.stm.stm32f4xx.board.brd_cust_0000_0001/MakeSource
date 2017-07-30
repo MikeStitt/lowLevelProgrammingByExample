@@ -1,0 +1,4 @@
+# Adding C Source Files
+SOURCE-y                                     += ../$(HAL_BOARD_DIR)/source/board/gpioConfig.c
+SOURCE-y                                     += ../$(HAL_BOARD_DIR)/source/board/serialPortConfig.c
+
