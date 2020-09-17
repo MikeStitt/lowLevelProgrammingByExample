@@ -10,7 +10,10 @@ blocks:
       jobs:
         - name: 'Job #1'
           commands:
+            - ls -Flag
             - checkout
+            - ls -Flag
+            - env
         - name: 'Job #2'
           commands:
             - pwd
