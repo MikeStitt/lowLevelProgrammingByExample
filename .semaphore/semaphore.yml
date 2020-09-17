@@ -9,11 +9,10 @@ blocks:
     task:
       prologue:
         commands:
-          - sudo apt-get update
-          - sudo apt-get install -y gcc-arm-none-eabi
-          - sudo apt-get install -y groovy
+          - install-package gcc-arm-none-eabi
+          - install-package groovy
       jobs:
-        - name: Do Nothing
+        - name: Setup Env
           commands:
             - pwd
   - name: Build the code
