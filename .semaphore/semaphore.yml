@@ -35,6 +35,10 @@ blocks:
           commands:
             - pwd
             - ls -Flag
+      prologue:
+        commands:
+          - install-package gcc-arm-none-eabi
+          - install-package groovy
   - name: Examine what was checkout out
     task:
       jobs:
