@@ -18,6 +18,8 @@ blocks:
             - ls -Flag
             - env
             - cd example.general/app
+            - make help
+            - make alldefconfig
             - make all
         - name: 'Job #2'
           commands:
