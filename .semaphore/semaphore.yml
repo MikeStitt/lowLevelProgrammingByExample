@@ -17,7 +17,7 @@ blocks:
             - pwd
             - ls -Flag
             - env
-            - cd example.general
+            - cd example.general/app
             - make all
         - name: 'Job #2'
           commands:
