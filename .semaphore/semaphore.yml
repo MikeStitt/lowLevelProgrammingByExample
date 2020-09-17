@@ -11,3 +11,7 @@ blocks:
         - name: 'Job #1'
           commands:
             - checkout
+        - name: 'Job #2'
+          commands:
+            - pwd
+            - ls -Flag
