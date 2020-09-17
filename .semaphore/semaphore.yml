@@ -15,3 +15,10 @@ blocks:
           commands:
             - pwd
             - ls -Flag
+  - name: Examine what was checkout out
+    task:
+      jobs:
+        - name: 'Job #1'
+          commands:
+            - pwd
+            - ls -Flas
