@@ -5,6 +5,17 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
+  - name: Setup Env
+    task:
+      prologue:
+        commands:
+          - sudo apt-get update
+          - sudo apt-get install -y gcc-arm-none-eabi
+          - sudo apt-get install -y groovy
+      jobs:
+        - name: Do Nothing
+          commands:
+            - pwd
   - name: Build the code
     task:
       jobs:
@@ -18,16 +29,13 @@ blocks:
             - ls -Flag
             - env
             - cd example.general/app
+            - make help
+            - make alldefconfig
             - make all
         - name: 'Job #2'
           commands:
             - pwd
             - ls -Flag
-      prologue:
-        commands:
-          - sudo apt-get update
-          - sudo apt-get install -y gcc-arm-none-eabi
-          - sudo apt-get install -y  kconfig-frontends
   - name: Examine what was checkout out
     task:
       jobs:
@@ -35,3 +43,8 @@ blocks:
           commands:
             - pwd
             - ls -Flas
+  - name: 'Block #3'
+    task:
+      jobs:
+        - name: 'Job #1'
+          commands: []
